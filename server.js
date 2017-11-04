@@ -1,3 +1,7 @@
+const ROOT_URL = "http://www.odata.charities.govt.nz/Organisations?$format=json";
+const COMPANY_OFFICE_URL = "https://app.companiesoffice.govt.nz/companies/app/ui/pages/companies/";
+var request = require('request');
+
 //  OpenShift sample Node application
 var express = require('express'),
   app = express(),
@@ -92,7 +96,7 @@ app.get('/pagecount', function (req, res) {
 
 app.get('/charity', function (req, res) {
 
-  request('http://www.odata.charities.govt.nz/Organisations?$format=json', function (error, response, body) {
+  request(ROOT_URL, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       //console.log(body) // Print the google web page.
       res.send(body)
@@ -103,10 +107,16 @@ app.get('/charity', function (req, res) {
 })
 
 
-app.get('/company', function (req, res) {
-  request('http://www.odata.charities.govt.nz/Organisations?$format=json', function (error, response, body) {
+app.get('/company/:number', function (req, res) {
+
+  console.log('request query is:', req.params.number);
+
+  request(COMPANY_OFFICE_URL + req.params.number, function (error, response, body) {
     if (!error && response.statusCode == 200) {
       //console.log(body) // Print the google web page.
+      res.send(body)
+    } else {
+      res.status(500);
       res.send(body)
     }
   })
